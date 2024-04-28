@@ -27,7 +27,7 @@ if args.run:
         if response.text == "lttss":
             print("an lttss server is already running on this port.")
         else:
-            print(f"Port {config.port} is already by some other process.")
+            print(f"Port {config.port} is occupied by some other process.")
     else:
         print("Starting the server.")
         import tts_server_controller
