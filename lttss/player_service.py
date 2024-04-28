@@ -19,6 +19,9 @@ class MPV:
         atexit.register(self.terminate)
         return
     
+    def sleep(self):
+        sleep(0.1)
+    
     # def send_command(self, command):
     #     cmd = f"echo '{json.dumps(command)}' | socat - {self.input_ipc_server}"
     #     print(cmd)
@@ -29,17 +32,18 @@ class MPV:
             print(str(self.input_ipc_server))
             s.connect(str(self.input_ipc_server))
             s.sendall((json.dumps(command) + '\n').encode('utf-8'))
+        self.sleep()
 
-    def loadfile(self, filename):
-        command = {"command": ["loadfile", filename]}
+    def loadfile(self, path):
+        command = {"command": ["loadfile", str(path)]}
         self.send_command(command)
         
-    def append(self, filename):
-        command = {"command": ["loadfile", filename, "append"]}
+    def append(self, path):
+        command = {"command": ["loadfile", str(path), "append-play"]}
         self.send_command(command)
 
-    def load_new_sequance_tip(self, filename):
-        command = {"command": ["loadfile", filename, "replace"]}
+    def load_new_sequance_tip(self, path):
+        command = {"command": ["loadfile", str(path), "replace"]}
         self.send_command(command)
         command = {"command": ["playlist-clear"]}
         self.send_command(command)
