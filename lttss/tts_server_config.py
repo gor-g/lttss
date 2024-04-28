@@ -6,7 +6,9 @@ class TTSServerConfig():
         config_json = self.load_from_json()
         self.models = config_json["models"]
         self.fallback_lang = config_json["fallback_lang"]
-        self.models_dir_path = Path(config_json["models_dir_path"])
+        self.data_dir_path = Path(config_json["data_dir_path"])
+        self.models_dir_path = self.data_dir_path / "models"
+        self.silence_wav_path = self.data_dir_path / "silence.wav"
         self.export_dir_path = Path(config_json["export_dir_path"])
         self.tmp_dir_path = Path(config_json["tmp_dir_path"])
 
