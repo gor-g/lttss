@@ -6,6 +6,7 @@ import time
 from langdetect import detect
 import wave
 from player_service import MPV
+from utils import generate_silent_wav, generate_silent_wav
 
 class TTSService():
     def __init__(self):
@@ -18,7 +19,7 @@ class TTSService():
         self.player.run()
         if not nltk.data.find('tokenizers/punkt'):
             nltk.download('punkt')
-
+        generate_silent_wav("sample.wav", self.config.silence_wav_path, 0.5)
 
     def load_models(self):
         self.models : dict = dict()
@@ -65,17 +66,19 @@ class TTSService():
         path = self.make_tmp_wav_path()
         self.generate_audio(lang, sentence, path)
         self.player.play(path)
-
+    
     def play_sentences(self, sentences):
         sentence = sentences.pop(0)
         path = self.make_tmp_wav_path()
         lang = self.detect_language(sentence)
         self.generate_audio(lang, sentence, path)
-        self.player.load_new_sequance_tip(path)
+        self.player.load_new_sequance_tip(self.config.silence_wav_path)
+        self.player.append(path)
         for sentence in sentences:
             path = self.make_tmp_wav_path()
             lang = self.detect_language(sentence)
             self.generate_audio(lang, sentence, path)
+            self.player.append(self.config.silence_wav_path)
             self.player.append(path)
         return
 
@@ -87,6 +90,7 @@ class TTSService():
         return
     
     def play_text(self, text):
+        print(text)
         sentences = self.tokenize(text)
         self.play_sentences(sentences)
 
