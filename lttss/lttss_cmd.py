@@ -35,5 +35,6 @@ if args.run:
 
 elif args.play:
     text = pyperclip.paste()
+    print(text)
     response = requests.post(f"http://localhost:{config.port}/play_text", json={"text": text})
     print(response)

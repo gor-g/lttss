@@ -11,6 +11,9 @@ class TTSService():
     def __init__(self):
         self.config : TTSServerConfig = TTSServerConfig()
         self.load_models()
+        os.makedirs(self.config.tmp_dir_path, exist_ok=True)
+        os.makedirs(self.config.export_dir_path, exist_ok=True)
+        os.makedirs(self.config.to_play_dir_path, exist_ok=True)
         self.player : MPV  = MPV(self.config.mpv_socket_dir_path, self.config.default_speed)
         self.player.run()
         if not nltk.data.find('tokenizers/punkt'):
@@ -66,11 +69,13 @@ class TTSService():
     def play_sentences(self, sentences):
         sentence = sentences.pop(0)
         path = self.make_tmp_wav_path()
-        self.generate_audio(sentence, path)
+        lang = self.detect_language(sentence)
+        self.generate_audio(lang, sentence, path)
         self.player.load_new_sequance_tip(path)
         for sentence in sentences:
             path = self.make_tmp_wav_path()
-            self.generate_audio(sentence, path)
+            lang = self.detect_language(sentence)
+            self.generate_audio(lang, sentence, path)
             self.player.append(path)
         return
 

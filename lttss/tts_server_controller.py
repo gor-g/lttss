@@ -6,8 +6,8 @@ app = Flask(__name__)
 tts_service = TTSService()
 
 
-@app.route('/fromfile', methods=['POST'])
-def fromfile():
+@app.route('/read_from_file', methods=['POST'])
+def read_from_file():
     data = request.json
     tts_service.play_text_file(data["textfilename"])
     return make_response('', 200)
@@ -38,3 +38,7 @@ def play_text():
 @app.route('/uname', methods=['GET'])
 def uname():
     return make_response("lttss", 200)
+
+
+if __name__ == '__main__':
+    app.run(port=37373, debug=True)
