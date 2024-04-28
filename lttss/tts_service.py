@@ -28,6 +28,7 @@ class TTSService():
         self.models['fallback'] = self.models[self.config.fallback_lang]
 
     def detect_language(self, text):
+        return 'en'
         try:
             lang = detect(text)
             if lang in self.models.keys():
