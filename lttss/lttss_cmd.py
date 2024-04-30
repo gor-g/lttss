@@ -19,4 +19,16 @@ if args.run:
     cmd_impl.run(config)
 
 elif args.play:
-    cmd_impl.play(config)
+    cmd_impl.play_selected(config)
+
+elif args.append_to_play:
+    cmd_impl.append_selected(config)
+
+elif args.speed_up:
+    cmd_impl.speedup(config)
+
+elif args.speed_down:
+    cmd_impl.speeddown(config)
+
+elif args.export:
+    cmd_impl.export_selected(config)
