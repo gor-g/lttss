@@ -114,6 +114,9 @@ class TTSService():
     
     def toggle_pause(self):
         self.player.toggle_pause()
+
+    def back(self):
+        self.player.back()
     
     def speedup(self):
         self.player.set_speed(self.player.speed + self.config.speed_increment)

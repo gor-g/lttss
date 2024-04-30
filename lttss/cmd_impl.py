@@ -63,3 +63,6 @@ def export_selected(config : TTSServerConfig):
 
 def toggle_pause(config : TTSServerConfig):
     requests.post(f"http://localhost:{config.port}/toggle_pause")
+
+def back(config : TTSServerConfig):
+    requests.post(f"http://localhost:{config.port}/back")

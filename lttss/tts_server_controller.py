@@ -51,6 +51,11 @@ def toggle_pause():
     tts_service.toggle_pause()
     return make_response('', 200)
 
+@app.route('/back', methods=['POST'])
+def back():
+    tts_service.back()
+    return make_response('', 200)
+
 @app.route('/uname', methods=['GET'])
 def uname():
     return make_response("lttss", 200)

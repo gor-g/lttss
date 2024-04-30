@@ -62,6 +62,9 @@ class MPV:
         self.send_command({"command": ["cycle", "pause"]})
         return
 
+    def back(self):
+        self.send_command({"command": ["playlist-prev"]})
+        return
 
 
 if __name__=="__main__":
