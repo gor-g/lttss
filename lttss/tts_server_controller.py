@@ -28,12 +28,23 @@ def export_from_file():
     path = tts_service.export_text_file(data["textfilename"])
     return make_response(path, 200)
 
+@app.route('/export', methods=['POST'])
+def export():
+    data = request.json
+    path = tts_service.export_text(data["text"])
+    return make_response(path, 200)
+
 @app.route('/play_text', methods=['POST'])
 def play_text():
     data = request.json
     tts_service.play_text(data["text"])
     return make_response('', 200)
 
+@app.route('/append_text', methods=['POST'])
+def append_text():
+    data = request.json
+    tts_service.append_text(data["text"])
+    return make_response('', 200)
 
 @app.route('/uname', methods=['GET'])
 def uname():
@@ -41,4 +52,4 @@ def uname():
 
 
 if __name__ == '__main__':
-    app.run(port=37373, debug=True)
+    app.run(port=tts_service.config.port, debug=True)
