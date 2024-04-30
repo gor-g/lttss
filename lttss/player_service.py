@@ -57,6 +57,10 @@ class MPV:
         self.send_command({"command": ["quit"]})
         self.process.terminate()
         return
+    
+    def toggle_pause(self):
+        self.send_command({"command": ["cycle", "pause"]})
+        return
 
 
 

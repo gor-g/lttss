@@ -112,6 +112,9 @@ class TTSService():
         text = self.read_from_file(textfilename)
         return self.export_text(text)
     
+    def toggle_pause(self):
+        self.player.toggle_pause()
+    
     def speedup(self):
         self.player.set_speed(self.player.speed + self.config.speed_increment)
 

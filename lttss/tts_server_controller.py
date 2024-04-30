@@ -46,6 +46,11 @@ def append_text():
     tts_service.append_text(data["text"])
     return make_response('', 200)
 
+@app.route('/toggle_pause', methods=['POST'])
+def toggle_pause():
+    tts_service.toggle_pause()
+    return make_response('', 200)
+
 @app.route('/uname', methods=['GET'])
 def uname():
     return make_response("lttss", 200)

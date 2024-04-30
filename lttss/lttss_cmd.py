@@ -10,6 +10,7 @@ parser.add_argument('-ap', '--append-to-play', action='store_true', help='Append
 parser.add_argument('-s', '--speed-up', action='store_true', help='Speed up the sound.', default=False)
 parser.add_argument('-d', '--speed-down', action='store_true', help='Speed down the sound.', default=False)
 parser.add_argument('-e', '--export', action='store_true', help='Export the sound.', default=False)
+parser.add_argument('-pp', '--play-pause', action='store_true', help='Pause the sound.', default=False)
 
 args = parser.parse_args()
 
@@ -32,3 +33,7 @@ elif args.speed_down:
 
 elif args.export:
     cmd_impl.export_selected(config)
+
+elif args.play_pause:
+    cmd_impl.toggle_pause(config)
+

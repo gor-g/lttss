@@ -60,3 +60,6 @@ def export_selected(config : TTSServerConfig):
         print(f"Exported to {path}")
     else:
         print("No text to export.")
+
+def toggle_pause(config : TTSServerConfig):
+    requests.post(f"http://localhost:{config.port}/toggle_pause")
