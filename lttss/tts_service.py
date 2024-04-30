@@ -19,7 +19,8 @@ class TTSService():
         self.player.run()
         if not nltk.data.find('tokenizers/punkt'):
             nltk.download('punkt')
-        generate_silent_wav("sample.wav", self.config.silence_wav_path, 0.5)
+        generate_silent_wav("sample.wav", self.config.intersentence_silence_wav_path, self.config.intersentence_pause_duration)
+        generate_silent_wav("sample.wav", self.config.initial_silence_wav_path, self.config.initial_latency_duration)
 
     def load_models(self):
         self.models : dict = dict()
@@ -62,31 +63,27 @@ class TTSService():
         sentences = nltk.tokenize.sent_tokenize(text)
         return sentences
     
-    def play(self, sentence):
-        lang = self.detect_language(sentence)
-        path = self.make_tmp_wav_path()
-        self.generate_audio(lang, sentence, path)
-        self.player.play(path)
-    
     def play_sentences(self, sentences):
         sentence = sentences.pop(0)
         path = self.make_tmp_wav_path()
         lang = self.detect_language(sentence)
         self.generate_audio(lang, sentence, path)
-        self.player.load_new_sequance_tip(self.config.silence_wav_path)
+        self.player.load_new_sequance_tip(self.config.intersentence_silence_wav_path)
         self.player.append(path)
         for sentence in sentences:
             path = self.make_tmp_wav_path()
             lang = self.detect_language(sentence)
             self.generate_audio(lang, sentence, path)
-            self.player.append(self.config.silence_wav_path)
+            self.player.append(self.config.intersentence_silence_wav_path)
             self.player.append(path)
         return
 
     def append_sentences(self, sentences):
         for sentence in sentences:
             path = self.make_tmp_wav_path()
-            self.generate_audio(sentence, path)
+            lang = self.detect_language(sentence)
+            self.generate_audio(lang, sentence, path)
+            self.player.append(self.config.intersentence_silence_wav_path)
             self.player.append(path)
         return
     
@@ -95,8 +92,14 @@ class TTSService():
         sentences = self.tokenize(text)
         self.play_sentences(sentences)
 
-    def export_text(self, text):
-        lang = self.detect_language(text)
+    def append_text(self, text):
+        print(text)
+        sentences = self.tokenize(text)
+        self.append_sentences(sentences)
+
+    def export_text(self, text, lang=None):
+        if lang is None:
+            lang = self.detect_language(text)
         path = self.make_export_wav_path()
         self.generate_audio(lang, text, path)
         return path
