@@ -6,11 +6,11 @@ import time
 from langdetect import detect
 import wave
 from player_service import MPV
-from utils import generate_silent_wav, generate_silent_wav
+from utils import generate_silent_wav, generate_silent_wav, get_config
 
 class TTSService():
     def __init__(self):
-        self.config : TTSServerConfig = TTSServerConfig()
+        self.config : TTSServerConfig = get_config()
         self.load_models()
         os.makedirs(self.config.tmp_dir_path, exist_ok=True)
         os.makedirs(self.config.export_dir_path, exist_ok=True)

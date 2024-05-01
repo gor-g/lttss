@@ -1,5 +1,5 @@
 import argparse
-import tts_server_config
+from utils import get_config
 import cmd_impl
 
 parser = argparse.ArgumentParser(description='TTS Command')
@@ -15,7 +15,7 @@ parser.add_argument('-b', '--back', action='store_true', help='Go back.', defaul
 
 args = parser.parse_args()
 
-config = tts_server_config.TTSServerConfig()
+config = get_config()
 
 if args.run:
     cmd_impl.run(config)

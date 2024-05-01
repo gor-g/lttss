@@ -2,8 +2,8 @@ import json
 from pathlib import Path
 
 class TTSServerConfig():
-    def __init__(self):
-        config_json = self.load_from_json()
+    def __init__(self, path):
+        config_json = self.load_from_json(path)
         self.models = config_json["models"]
         self.fallback_lang = config_json["fallback_lang"]
         self.data_dir_path = Path(config_json["data_dir_path"])
@@ -28,7 +28,7 @@ class TTSServerConfig():
         self.initial_latency_duration = config_json["initial_latency_duration"]
         self.clipboard = config_json["clipboard"]
 
-    def load_from_json(self):
-        with open('tss-server-config.json') as f:
+    def load_from_json(self, path):
+        with open(str(path)) as f:
             config = json.load(f)
         return config

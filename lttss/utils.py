@@ -3,6 +3,8 @@ import array
 import numpy as np
 import wave
 import struct
+import os
+from tts_server_config import TTSServerConfig
 
 def get_os():
     os_name = platform.system()
@@ -14,6 +16,10 @@ def get_os():
         return 'macOS'
     else:
         return 'Unknown OS'
+
+def get_config()-> TTSServerConfig:
+    if get_os() == "Linux":
+        return TTSServerConfig(os.path.expanduser("~")+"/.config/lttss/lttss-config.json")
 
 
 def generate_silent_wav(path, duration=0.2, framerate=44100):
