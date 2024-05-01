@@ -29,7 +29,6 @@ class MPV:
 
     def send_command(self, command):
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
-            print(str(self.input_ipc_server))
             s.connect(str(self.input_ipc_server))
             s.sendall((json.dumps(command) + '\n').encode('utf-8'))
         self.sleep()

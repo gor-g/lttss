@@ -7,6 +7,7 @@ from langdetect import detect
 import wave
 from player_service import MPV
 from utils import generate_silent_wav, generate_silent_wav, get_config
+import re
 
 class TTSService():
     def __init__(self):
@@ -19,8 +20,9 @@ class TTSService():
         self.player.run()
         if not nltk.data.find('tokenizers/punkt'):
             nltk.download('punkt')
-        generate_silent_wav("sample.wav", self.config.intersentence_silence_wav_path, self.config.intersentence_pause_duration)
-        generate_silent_wav("sample.wav", self.config.initial_silence_wav_path, self.config.initial_latency_duration)
+        sample_path = self.generate_sample('en')
+        generate_silent_wav(sample_path, self.config.intersentence_silence_wav_path, self.config.intersentence_pause_duration)
+        generate_silent_wav(sample_path, self.config.initial_silence_wav_path, self.config.initial_latency_duration)
 
     def load_models(self):
         self.models : dict = dict()
@@ -47,7 +49,8 @@ class TTSService():
         return f"{self.config.export_dir_path}/voice-{time.time_ns()}.wav"
     
     def generate_audio(self, lang, text, path):
-        wav_file = wave.open(path, 'w')
+        print(text)
+        wav_file = wave.open(str(path), 'w')
         try:
             self.models[lang].synthesize(text, wav_file)
         finally:
@@ -62,6 +65,16 @@ class TTSService():
     def tokenize(self, text):
         sentences = nltk.tokenize.sent_tokenize(text)
         return sentences
+    
+    def clean_sentences(self, sentences:list[str]):
+        cleaned_sentences = []
+        for sentence in sentences:
+            sentence = re.sub(r"[^a-zA-Z0-9 :.,?!'-+<>]", '', sentence)
+            sentence = re.sub(r'\.(\.*\s*)*\.', '...', sentence)
+            sentence = re.sub(r"['-]$", '', sentence)
+            if sentence != '' and sentence != '.':
+                cleaned_sentences.append(sentence)
+        return cleaned_sentences
     
     def play_sentences(self, sentences):
         sentence = sentences.pop(0)
@@ -88,13 +101,11 @@ class TTSService():
         return
     
     def play_text(self, text):
-        print(text)
-        sentences = self.tokenize(text)
+        sentences = self.clean_sentences(self.tokenize(text))
         self.play_sentences(sentences)
 
     def append_text(self, text):
-        print(text)
-        sentences = self.tokenize(text)
+        sentences = self.clean_sentences(self.tokenize(text))
         self.append_sentences(sentences)
 
     def export_text(self, text, lang=None):
@@ -123,3 +134,9 @@ class TTSService():
 
     def speeddown(self):
         self.player.set_speed(self.player.speed - self.config.speed_increment)
+
+    def generate_sample(self, lang):
+        path = self.config.tmp_dir_path / "sample.wav"
+        self.generate_audio(lang, "Hello. LTTSS is running.", path)
+        self.player.load_new_sequance_tip(path)
+        return path
