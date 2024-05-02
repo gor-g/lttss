@@ -1,7 +1,6 @@
 import socket
 import requests
 import pyperclip
-import requests
 import subprocess
 
 from tts_server_config import TTSServerConfig 
@@ -18,9 +17,14 @@ def run(config : TTSServerConfig):
         else:
             print(f"Port {config.port} is occupied by some other process.")
     else:
+        import sys
+        import os
         print("Starting the server.")
-        import tts_server_controller
-        tts_server_controller.app.run(port=config.port, debug=True)
+        python = sys.executable
+        server_path = os.path.join(os.path.dirname(__file__), "tts_server_controller.py")
+        res = subprocess.Popen([python, server_path])
+        if res.returncode == 0:
+            print("Server started.")
 
 
 def play_selected(config : TTSServerConfig):
