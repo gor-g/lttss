@@ -27,22 +27,22 @@ def run(config : LTTSSConfig):
             print("Server started.")
 
 
-def play_selected(config : LTTSSConfig):
+def play_selected(config : LTTSSConfig, lang):
 
     data = subprocess.check_output(['xclip', '-selection', config.clipboard, '-o']).decode()
 
     if len(data) > 2:
         payload = {"text": data}
-        requests.post(f"http://localhost:{config.port}/play_text", json=payload)
+        requests.post(f"http://localhost:{config.port}/play_text/{lang}", json=payload)
     else:
         print("No text to play.")
 
-def append_selected(config : LTTSSConfig):
+def append_selected(config : LTTSSConfig, lang):
     data = subprocess.check_output(['xclip', '-selection', config.clipboard, '-o']).decode()
 
     if len(data) > 2:
         payload = {"text": data}
-        requests.post(f"http://localhost:{config.port}/append_text", json=payload)
+        requests.post(f"http://localhost:{config.port}/append_text/{lang}", json=payload)
     else:
         print("No text to append.")
 
@@ -53,12 +53,12 @@ def speedup(config : LTTSSConfig):
 def speeddown(config : LTTSSConfig):
     requests.post(f"http://localhost:{config.port}/speeddown")
 
-def export_selected(config : LTTSSConfig):
+def export_selected(config : LTTSSConfig, lang):
     data = subprocess.check_output(['xclip', '-selection', config.clipboard, '-o']).decode()
 
     if len(data) > 2:
         payload = {"text": data}
-        response = requests.post(f"http://localhost:{config.port}/export", json=payload)
+        response = requests.post(f"http://localhost:{config.port}/export/{lang}", json=payload)
         path = response.text
         pyperclip.copy(path)
         print(f"Exported to {path}")

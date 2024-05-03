@@ -23,27 +23,31 @@ def speeddown():
     return make_response('', 200)
 
 @app.route('/export_from_file', methods=['POST'])
-def export_from_file():
+@app.route('/export_from_file/<lang>', methods=['POST'])
+def export_from_file(lang='english'):
     data = request.json
-    path = tts_service.export_text_file(data["textfilename"])
+    path = tts_service.export_text_file(data["textfilename"], lang)
     return make_response(path, 200)
 
 @app.route('/export', methods=['POST'])
-def export():
+@app.route('/export/<lang>', methods=['POST'])
+def export(lang='english'):
     data = request.json
-    path = tts_service.export_text(data["text"])
+    path = tts_service.export_text(data["text"], lang)
     return make_response(path, 200)
 
 @app.route('/play_text', methods=['POST'])
-def play_text():
+@app.route('/play_text/<lang>', methods=['POST'])
+def play_text(lang='english'):
     data = request.json
-    tts_service.play_text(data["text"])
+    tts_service.play_text(data["text"], lang)
     return make_response('', 200)
 
 @app.route('/append_text', methods=['POST'])
-def append_text():
+@app.route('/append_text/<lang>', methods=['POST'])
+def append_text(lang='english'):
     data = request.json
-    tts_service.append_text(data["text"])
+    tts_service.append_text(data["text"], lang)
     return make_response('', 200)
 
 @app.route('/toggle_pause', methods=['POST'])
