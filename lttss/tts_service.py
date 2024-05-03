@@ -16,7 +16,7 @@ class TTSService():
         self.load_text_processors()
         self.player : MPV  = MPV(self.config.mpv_socket_dir_path, self.config.default_speed)
         self.player.run()
-        self.play_text("LTTSS is running!")
+        self.play_text("LTTSS is running!", "english")
     
     def init_dirs(self):
         os.makedirs(self.config.tmp_dir_path, exist_ok=True)
@@ -71,24 +71,24 @@ class TTSService():
             self.player.append(path)
         return
     
-    def play_text(self, text, lang = "english"):
+    def play_text(self, text, lang):
         sentences = self.text_processors[lang].process(text)
         self.play_sentences(sentences, lang)
 
-    def append_text(self, text, lang = "english"):
+    def append_text(self, text, lang):
         sentences = self.text_processors[lang].process(text)
         self.append_sentences(sentences, lang)
 
-    def export_text(self, text, lang="english"):
+    def export_text(self, text, lang):
         path = self.make_export_wav_path()
         self.generate_audio(lang, text, path)
         return path
     
-    def play_text_file(self, textfilename, lang = "english"):
+    def play_text_file(self, textfilename, lang):
         text = self.read_from_file(textfilename)
         self.play_text(text, lang)
     
-    def export_text_file(self, textfilename, lang = "english"):
+    def export_text_file(self, textfilename, lang):
         text = self.read_from_file(textfilename)
         return self.export_text(text, lang)
     
