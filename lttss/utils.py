@@ -39,4 +39,5 @@ def generate_sinusoidal_wav(path, duration=1.0, frequency=440.0, framerate=44100
         wf.setframerate(framerate)
         wf.writeframes(signal.tobytes())
 
-generate_sinusoidal_wav('sinusoidal.wav', 1.0, 440.0, 44100)
+if __name__ == "__main__":
+    generate_sinusoidal_wav('sinusoidal.wav', 1.0, 440.0, 44100)
