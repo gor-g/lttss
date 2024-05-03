@@ -6,6 +6,7 @@ class TextProcessor:
     def __init__(self):
         if not nltk.data.find('tokenizers/punkt'):
             nltk.download('punkt')
+        self.tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
     def process(self, text : str) -> list[str]:
         text = self.clean_white_spaces(text)
@@ -38,7 +39,7 @@ class TextProcessor:
         print("paragraphs", paragraphs)
         tokens = []
         for paragraph in paragraphs:
-            tokens.extend(nltk.tokenize.sent_tokenize(paragraph))
+            tokens.extend(self.tokenizer.tokenize(paragraph))
         return tokens
 
     def clean_white_spaces(self, text):
