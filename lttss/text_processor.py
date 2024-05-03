@@ -3,10 +3,10 @@ import re
 import nltk
 
 class TextProcessor:
-    def __init__(self):
+    def __init__(self, lang :str):
         if not nltk.data.find('tokenizers/punkt'):
             nltk.download('punkt')
-        self.tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+        self.tokenizer = nltk.data.load(f'tokenizers/punkt/{lang}.pickle')
 
     def process(self, text : str) -> list[str]:
         text = self.clean_white_spaces(text)

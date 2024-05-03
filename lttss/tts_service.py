@@ -12,10 +12,10 @@ class TTSService():
     def __init__(self):
         self.config : LTTSSConfig = get_config()
         self.load_models()
+        self.load_text_processors()
         self.init_dirs()
         self.player : MPV  = MPV(self.config.mpv_socket_dir_path, self.config.default_speed)
         self.player.run()
-        self.text_processor = TextProcessor()
         
 
     def init_dirs(self):
@@ -29,8 +29,11 @@ class TTSService():
             self.generators[lang] = AudioGenerator( model_file_name, self.config)
         self.generators['fallback'] = self.generators[self.config.fallback_lang]
 
-    def detect_language(self, text):
-        return 'en'
+    def load_text_processors(self):
+        self.text_processors : dict[str : TextProcessor] = dict()
+        for lang in self.config.models.keys():
+            self.text_processors[lang] = TextProcessor(lang)
+        self.text_processors['fallback'] = self.text_processors[self.config.fallback_lang]
 
     def make_tmp_wav_path(self):
         return f"{self.config.to_play_dir_path}/voice-{time.time_ns()}.wav"
@@ -47,41 +50,36 @@ class TTSService():
             text = f.read()
         return text
     
-    def play_sentences(self, sentences):
+    def play_sentences(self, sentences, lang):
         sentence = sentences.pop(0)
         path = self.make_tmp_wav_path()
-        lang = self.detect_language(sentence)
         self.generate_audio(lang, sentence, path)
         self.player.load_new_sequance_tip(self.config.intersentence_silence_wav_path)
         self.player.append(path)
         for sentence in sentences:
             path = self.make_tmp_wav_path()
-            lang = self.detect_language(sentence)
             self.generate_audio(lang, sentence, path)
             self.player.append(self.config.intersentence_silence_wav_path)
             self.player.append(path)
         return
 
-    def append_sentences(self, sentences):
+    def append_sentences(self, sentences, lang):
         for sentence in sentences:
             path = self.make_tmp_wav_path()
-            lang = self.detect_language(sentence)
             self.generate_audio(lang, sentence, path)
             self.player.append(self.config.intersentence_silence_wav_path)
             self.player.append(path)
         return
     
-    def play_text(self, text):
-        sentences = self.text_processor.process(text)
-        self.play_sentences(sentences)
+    def play_text(self, text, lang = "english"):
+        sentences = self.text_processors[lang].process(text)
+        self.play_sentences(sentences, lang)
 
-    def append_text(self, text):
-        sentences = self.text_processor.process(text)
-        self.append_sentences(sentences)
+    def append_text(self, text, lang = "english"):
+        sentences = self.text_processors[lang].process(text)
+        self.append_sentences(sentences, lang)
 
-    def export_text(self, text, lang=None):
-        if lang is None:
-            lang = self.detect_language(text)
+    def export_text(self, text, lang="english"):
         path = self.make_export_wav_path()
         self.generate_audio(lang, text, path)
         return path
