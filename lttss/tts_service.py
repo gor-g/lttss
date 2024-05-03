@@ -11,9 +11,9 @@ from audio_generator import AudioGenerator
 class TTSService():
     def __init__(self):
         self.config : LTTSSConfig = get_config()
+        self.init_dirs()
         self.load_models()
         self.load_text_processors()
-        self.init_dirs()
         self.player : MPV  = MPV(self.config.mpv_socket_dir_path, self.config.default_speed)
         self.player.run()
         
