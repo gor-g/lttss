@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-class TTSServerConfig():
+class LTTSSConfig():
     def __init__(self, path):
         config_json = self.load_from_json(path)
         self.models = config_json["models"]
@@ -16,8 +16,8 @@ class TTSServerConfig():
         self.mpv_socket_file_name = Path(config_json["mpv_socket_file_name"])
         self.to_play_dir_name = Path(config_json["to_play_dir_name"])
 
-        self.to_play_dir_path = self.tmp_dir_path / self.mpv_socket_file_name
-        self.mpv_socket_dir_path = self.tmp_dir_path / self.to_play_dir_name
+        self.to_play_dir_path = self.tmp_dir_path / self.to_play_dir_name
+        self.mpv_socket_dir_path = self.tmp_dir_path / self.mpv_socket_file_name
 
         self.port = config_json["port"]
 

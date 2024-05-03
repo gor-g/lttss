@@ -4,7 +4,7 @@ import numpy as np
 import wave
 import struct
 import os
-from tts_server_config import TTSServerConfig
+from config import LTTSSConfig
 
 def get_os():
     os_name = platform.system()
@@ -17,39 +17,9 @@ def get_os():
     else:
         return 'Unknown OS'
 
-def get_config()-> TTSServerConfig:
+def get_config()-> LTTSSConfig:
     if get_os() == "Linux":
-        return TTSServerConfig(os.path.expanduser("~")+"/.config/lttss/lttss-config.json")
-
-
-def generate_silent_wav(path, duration=0.2, framerate=44100):
-    nframes = int(framerate * duration)
-
-    data = array.array('h', [0] * nframes)
-
-    with wave.open(str(path), 'w') as wf:
-        wf.setnchannels(1)  # mono
-        wf.setsampwidth(2)  # 2 bytes = 16 bits
-        wf.setframerate(framerate)
-
-        wf.writeframes(data.tobytes())
-
-import wave
-
-def generate_silent_wav(sample_path, result_path, duration=0.2):
-    # Open the source file and read the parameters
-    with wave.open(str(sample_path), 'r') as wf:
-        params = wf.getparams()
-
-    # Generate the silent data
-    nframes = int(params.framerate * duration)
-    data = array.array('h', [0] * nframes)
-
-    # Open the target file and write the data with the copied parameters
-    with wave.open(str(result_path), 'w') as wf:
-        wf.setparams(params)
-        wf.writeframes(data.tobytes())
-
+        return LTTSSConfig(os.path.expanduser("~")+"/.config/lttss/lttss-config.json")
 
 
 def generate_sinusoidal_wav(path, duration=1.0, frequency=440.0, framerate=44100):

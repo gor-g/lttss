@@ -3,11 +3,11 @@ import requests
 import pyperclip
 import subprocess
 
-from tts_server_config import TTSServerConfig 
+from config import LTTSSConfig 
 
 
 
-def run(config : TTSServerConfig):
+def run(config : LTTSSConfig):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         occupied = s.connect_ex(("localhost", config.port)) == 0
     if occupied:
@@ -27,7 +27,7 @@ def run(config : TTSServerConfig):
             print("Server started.")
 
 
-def play_selected(config : TTSServerConfig):
+def play_selected(config : LTTSSConfig):
 
     data = subprocess.check_output(['xclip', '-selection', config.clipboard, '-o']).decode()
 
@@ -37,7 +37,7 @@ def play_selected(config : TTSServerConfig):
     else:
         print("No text to play.")
 
-def append_selected(config : TTSServerConfig):
+def append_selected(config : LTTSSConfig):
     data = subprocess.check_output(['xclip', '-selection', config.clipboard, '-o']).decode()
 
     if len(data) > 2:
@@ -47,13 +47,13 @@ def append_selected(config : TTSServerConfig):
         print("No text to append.")
 
 
-def speedup(config : TTSServerConfig):
+def speedup(config : LTTSSConfig):
     requests.post(f"http://localhost:{config.port}/speedup")
 
-def speeddown(config : TTSServerConfig):
+def speeddown(config : LTTSSConfig):
     requests.post(f"http://localhost:{config.port}/speeddown")
 
-def export_selected(config : TTSServerConfig):
+def export_selected(config : LTTSSConfig):
     data = subprocess.check_output(['xclip', '-selection', config.clipboard, '-o']).decode()
 
     if len(data) > 2:
@@ -65,8 +65,8 @@ def export_selected(config : TTSServerConfig):
     else:
         print("No text to export.")
 
-def toggle_pause(config : TTSServerConfig):
+def toggle_pause(config : LTTSSConfig):
     requests.post(f"http://localhost:{config.port}/toggle_pause")
 
-def back(config : TTSServerConfig):
+def back(config : LTTSSConfig):
     requests.post(f"http://localhost:{config.port}/back")
