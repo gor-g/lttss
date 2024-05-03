@@ -84,13 +84,13 @@ class TTSService():
         self.generate_audio(lang, text, path)
         return path
     
-    def play_text_file(self, textfilename):
+    def play_text_file(self, textfilename, lang = "english"):
         text = self.read_from_file(textfilename)
-        self.play_text(text)
+        self.play_text(text, lang)
     
-    def export_text_file(self, textfilename):
+    def export_text_file(self, textfilename, lang = "english"):
         text = self.read_from_file(textfilename)
-        return self.export_text(text)
+        return self.export_text(text, lang)
     
     def toggle_pause(self):
         self.player.toggle_pause()
