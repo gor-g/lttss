@@ -16,8 +16,8 @@ class TTSService():
         self.load_text_processors()
         self.player : MPV  = MPV(self.config.mpv_socket_dir_path, self.config.default_speed)
         self.player.run()
-        
-
+        self.play_text("LTTSS is running!")
+    
     def init_dirs(self):
         os.makedirs(self.config.tmp_dir_path, exist_ok=True)
         os.makedirs(self.config.export_dir_path, exist_ok=True)
