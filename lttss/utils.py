@@ -1,25 +1,19 @@
 import platform
-import array
 import numpy as np
 import wave
-import struct
-import os
-from config import LTTSSConfig
+from os_api import OSAPI, LinuxAPI, WindowsAPI, MacOSAPI
 
-def get_os():
+def get_os_api()-> OSAPI:
     os_name = platform.system()
     if os_name == 'Windows':
-        return 'Windows'
+        return WindowsAPI()
     elif os_name == 'Linux':
-        return 'Linux'
+        return LinuxAPI()
     elif os_name == 'Darwin':
-        return 'macOS'
+        return MacOSAPI()
     else:
-        return 'Unknown OS'
+        raise Exception(f"Unsupported OS: {os_name}")
 
-def get_config()-> LTTSSConfig:
-    if get_os() == "Linux":
-        return LTTSSConfig(os.path.expanduser("~")+"/.config/lttss/lttss-config.json")
 
 
 def generate_sinusoidal_wav(path, duration=1.0, frequency=440.0, framerate=44100):

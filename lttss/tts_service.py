@@ -3,14 +3,14 @@ from config import LTTSSConfig
 import time
 from langdetect import detect
 from player_service import MPV
-from utils import get_config
+from utils import get_os_api
 from text_processor import TextProcessor
 
 from audio_generator import AudioGenerator
 
 class TTSService():
     def __init__(self):
-        self.config : LTTSSConfig = get_config()
+        self.config : LTTSSConfig = get_os_api().get_config()
         self.init_dirs()
         self.load_models()
         self.load_text_processors()
