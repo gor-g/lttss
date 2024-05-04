@@ -22,11 +22,6 @@ class MPV:
     def sleep(self):
         sleep(0.1)
     
-    # def send_command(self, command):
-    #     cmd = f"echo '{json.dumps(command)}' | socat - {self.input_ipc_server}"
-    #     print(cmd)
-    #     os.system(cmd)
-
     def send_command(self, command):
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
             s.connect(str(self.input_ipc_server))
