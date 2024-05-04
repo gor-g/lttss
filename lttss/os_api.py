@@ -10,6 +10,7 @@ class OSAPI:
         pass
 
     def notify(self, message) -> None:
+        print("notify OSAPI")
         pass
 
 class LinuxAPI(OSAPI):
@@ -34,8 +35,10 @@ class LinuxAPI(OSAPI):
         return data
         
     def notify(self, message):
-        subprocess.run(["notify-send", message])
-    
+        res =  subprocess.run(["notify-send",  message])
+        if res.returncode != 0:
+            raise Exception(f"notify-send failed with error : {res.stderr}")
+
 
 class WindowsAPI(OSAPI):
     def __init__(self):

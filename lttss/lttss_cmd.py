@@ -13,6 +13,7 @@ parser.add_argument('-e', '--export', action='store_true', help='Export the soun
 parser.add_argument('-pp', '--play-pause', action='store_true', help='Pause the sound.', default=False)
 parser.add_argument('-b', '--back', action='store_true', help='Go back.', default=False)
 parser.add_argument('-l', '--lang', help='Language of the text.', default="english")
+parser.add_argument('--shutdown', action='store_true', help='Shutdown the server.', default=False)
 
 args = parser.parse_args()
 
@@ -20,13 +21,13 @@ os_api = get_os_api()
 port = os_api.get_config().port
 
 if args.run:
-    cmd_impl.run(port)
+    cmd_impl.run(os_api, port)
 
 elif args.play:
-    cmd_impl.play_selected(port, args.lang)
+    cmd_impl.play_selected(os_api, port, args.lang)
 
 elif args.append_to_play:
-    cmd_impl.append_selected(port, args.lang)
+    cmd_impl.append_selected(os_api, port, args.lang)
 
 elif args.speed_up:
     cmd_impl.speedup(port)
@@ -35,10 +36,13 @@ elif args.speed_down:
     cmd_impl.speeddown(port)
 
 elif args.export:
-    cmd_impl.export_selected(port, args.lang)
+    cmd_impl.export_selected(os_api, port, args.lang)
 
 elif args.play_pause:
     cmd_impl.toggle_pause(port)
 
 elif args.back:
     cmd_impl.back(port)
+
+elif args.shutdown:
+    cmd_impl.shutdown(port)

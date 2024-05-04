@@ -9,7 +9,7 @@ from os_api import OSAPI
 
 
 
-def run(port : int):
+def run(os_api : OSAPI, port : int):
     try:
         from tts_server_controller import app
         app.run(port=port , host="localhost")
@@ -17,9 +17,11 @@ def run(port : int):
         if isinstance(e, socket.gaierror):
             response = requests.post(f"http://localhost:{port}/uname")
             if response.text == "lttss":
-                print("a lttss server is already running on this port.")
+                print(f"a lttss server is already running on port {port}.")
+                os_api.notify(f"a lttss server is already running on port {port}.")
             else:
                 print(f"Port {port} is occupied by some other process.")
+                os_api.notify(f"Port {port} is occupied by some other process.")
         else:
             raise e
     
@@ -34,6 +36,7 @@ def play_selected( os_api : OSAPI, port : int, lang : str):
         requests.post(f"http://localhost:{port}/play_text/{lang}", json=payload)
     else:
         print("No text to play.")
+        os_api.notify("No text to play.")
 
 def append_selected(os_api : OSAPI, port : int, lang : str):
 
@@ -44,6 +47,7 @@ def append_selected(os_api : OSAPI, port : int, lang : str):
         requests.post(f"http://localhost:{port}/append_text/{lang}", json=payload)
     else:
         print("No text to append.")
+        os_api.notify("No text to append.")
 
 def export_selected(os_api : OSAPI, port : int, lang : str):
     data = os_api.read_clipboard_content()
@@ -53,8 +57,10 @@ def export_selected(os_api : OSAPI, port : int, lang : str):
         response = requests.post(f"http://localhost:{port}/export/{lang}", json=payload)
         path = response.text
         print(f"Exported to {path}")
+        os_api.notify(f"Exported to {path}")
     else:
         print("No text to export.")
+        os_api.notify("No text to export.")
 
 def speedup(port : int):
     requests.post(f"http://localhost:{port}/speedup")
@@ -68,3 +74,6 @@ def toggle_pause(port : int):
 
 def back(port : int):
     requests.post(f"http://localhost:{port}/back")
+
+def shutdown(port : int):
+    requests.get(f"http://localhost:{port}/shutdown")

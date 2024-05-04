@@ -1,7 +1,9 @@
 from tts_service import TTSService
 from flask import Flask, request, make_response
+import os
+import signal
 
-
+PID = os.getpid()
 app = Flask(__name__)
 tts_service = TTSService()
 
@@ -63,6 +65,13 @@ def back():
 @app.route('/uname', methods=['GET'])
 def uname():
     return make_response("lttss", 200)
+
+@app.route("/shutdown")
+def shutdown():
+    pid = os.getpid()
+    assert pid == PID
+    os.kill(pid, signal.SIGINT)
+    return "shuting down lttss", 200
 
 
 if __name__ == '__main__':
