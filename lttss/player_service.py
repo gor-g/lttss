@@ -6,7 +6,19 @@ import atexit
 import json
 import socket
 
-class MPV:
+class PlayerService:
+    def run(self): raise NotImplementedError("This is a placeholder method, call a child class instead.")
+    def append(self, path): raise NotImplementedError("This is a placeholder method, call a child class instead.")
+    def load_new_sequance_tip(self, path): raise NotImplementedError("This is a placeholder method, call a child class instead.")
+    def set_speed(self, speed): raise NotImplementedError("This is a placeholder method, call a child class instead.")
+    def terminate(self): raise NotImplementedError("This is a placeholder method, call a child class instead.")
+    def toggle_pause(self): raise NotImplementedError("This is a placeholder method, call a child class instead.")
+    def back(self): raise NotImplementedError("This is a placeholder method, call a child class instead.")
+
+
+
+
+class MPV(PlayerService):
     def __init__(self, input_ipc_server, speed=2) -> None:
         self.input_ipc_server = input_ipc_server
         self.speed = speed
@@ -28,10 +40,6 @@ class MPV:
             s.sendall((json.dumps(command) + '\n').encode('utf-8'))
         self.sleep()
 
-    def loadfile(self, path):
-        command = {"command": ["loadfile", str(path)]}
-        self.send_command(command)
-        
     def append(self, path):
         command = {"command": ["loadfile", str(path), "append-play"]}
         self.send_command(command)
@@ -59,7 +67,7 @@ class MPV:
     def back(self):
         self.send_command({"command": ["playlist-prev"]})
         return
-
+    
 
 if __name__=="__main__":
     mpv = MPV('/tmp/mpvsocket2')

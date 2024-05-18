@@ -2,7 +2,7 @@ import os
 from config import LTTSSConfig
 import time
 from langdetect import detect
-from player_service import MPV
+from player_service import PlayerService, MPV
 from text_processor import TextProcessor
 from pathlib import Path
 
@@ -14,7 +14,7 @@ class TTSService():
         self.init_dirs()
         self.load_models()
         self.load_text_processors()
-        self.player : MPV  = MPV(self.config.mpv_socket_dir_path, self.config.default_speed)
+        self.player : PlayerService  = MPV(self.config.mpv_socket_dir_path, self.config.default_speed)
         self.player.run()
         self.play_text("LTTSS is running!", "english")
     
