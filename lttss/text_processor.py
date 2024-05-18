@@ -3,12 +3,13 @@ import re
 import nltk
 
 class TextProcessor:
+
     def __init__(self, lang :str):
         if not nltk.data.find('tokenizers/punkt'):
             nltk.download('punkt')
         self.tokenizer = nltk.data.load(f'tokenizers/punkt/{lang}.pickle')
 
-    def process(self, text : str) -> list[str]:
+    def process_into_tokens(self, text : str) -> list[str]:
         text = self.clean_white_spaces(text)
         tokens = self.tokenize(text)
         tokens = self.clean_tokens(tokens)
@@ -23,10 +24,11 @@ class TextProcessor:
         return clean_tokens
 
     def clean_token(self, token):
-        token = re.sub(r'\n+', ' ', token)
-        token = re.sub(r'"+', ' ', token)
+        token = re.sub(r'\n+', '\n', token)
+        token = re.sub(r'"+', ',,', token) # this is here for pauses. Piper is bad at handling silences for quotes and ellipses.
         token = re.sub(r'\s+', ' ', token)
-        token = re.sub(r'\.(\.*\s*)*\.', '...', token)
+        token = re.sub(r'\.(\.*\s*)*\.', '...', token) 
+        token = re.sub(r'\.\.\.', ',,', token) # this is here for pauses. Piper is bad at handling silences for quotes and ellipses.
         token = token.strip(' \'-')
         if token == '' or token == '.':
             return None
@@ -49,5 +51,11 @@ class TextProcessor:
         return text
     
     def clean_text(self, text):
-        text = re.sub(self.allowed_chars, '', text)
+        text = re.sub(r'\n+', ', ', text)
+        text = re.sub(r'[!?]+', '. ', text)
+        text = re.sub(r'"+', ',,', text) # this is here for pauses. Piper is bad at handling silences for quotes and ellipses.
+        text = re.sub(r'\s+', ' ', text)
+        text = re.sub(r'\.(\s*\n*\t*?,)*\s*\n*\t*', '. ', text)
+        text = re.sub(r',+(\s*\n*\t*?,)*\s*\n*\t*', ', ', text)
+
         return text

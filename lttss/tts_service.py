@@ -72,15 +72,16 @@ class TTSService():
         return
     
     def play_text(self, text, lang):
-        sentences = self.text_processors[lang].process(text)
+        sentences = self.text_processors[lang].process_into_tokens(text)
         self.play_sentences(sentences, lang)
 
     def append_text(self, text, lang):
-        sentences = self.text_processors[lang].process(text)
+        sentences = self.text_processors[lang].process_into_tokens(text)
         self.append_sentences(sentences, lang)
 
     def export_text(self, text, lang):
         path = self.make_export_wav_path()
+        text = self.text_processors[lang].clean_text(text)
         self.generate_audio(lang, text, path)
         return path
     
