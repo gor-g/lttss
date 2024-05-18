@@ -3,16 +3,23 @@ from piper.voice import PiperVoice
 import wave
 import numpy as np
 from pathlib import Path
+from typing import Any
 
 
 class AudioGenerator():
-    def __init__(self, model_file_name : str, config : LTTSSConfig  ):
+    def __init__(self, model_config : dict[str: Any], config : LTTSSConfig  ):
+        model_file_name = model_config["file_name"]
         if model_file_name.endswith(".onnx"):
             self.name = model_file_name[:-5]
         else:
             print(".onnx extension not detected. It will be added automatically.")
             self.name = model_file_name
         self.model = PiperVoice.load(config.models_dir_path / f"{self.name}.onnx")
+
+        if "speaker_id" in model_config.keys():
+            self.speaker_id = model_config["speaker_id"]
+        else:
+            self.speaker_id = None
 
         self.inter_sentence_pause_wav_path : Path = config.data_dir_path/ f"intersentence_pause_{self.name}.wav"
         self.initial_latency_wav_path : Path = config.data_dir_path/ f"initial_latency_{self.name}.wav"
@@ -27,7 +34,7 @@ class AudioGenerator():
     def generate_audio(self, text : str, path : str | Path):
         wav_file = wave.open(str(path), 'w')
         try:
-            self.model.synthesize(text, wav_file)
+            self.model.synthesize(text, wav_file, speaker_id=self.speaker_id)
         finally:
             wav_file.close()
         return path
