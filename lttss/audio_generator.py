@@ -14,9 +14,9 @@ class AudioGenerator():
             self.name = model_file_name
         self.model = PiperVoice.load(config.models_dir_path / f"{self.name}.onnx")
 
-        self.inter_sentence_pause_wav_path = config.data_dir_path/ f"intersentence_pause_{self.name}.wav"
-        self.initial_latency_wav_path = config.data_dir_path/ f"initial_latency_{self.name}.wav"
-        self.sample_wav_path = config.data_dir_path/ f"sample_{self.name}.wav"
+        self.inter_sentence_pause_wav_path : Path = config.data_dir_path/ f"intersentence_pause_{self.name}.wav"
+        self.initial_latency_wav_path : Path = config.data_dir_path/ f"initial_latency_{self.name}.wav"
+        self.sample_wav_path : Path = config.data_dir_path/ f"sample_{self.name}.wav"
         self.generate_sample(self.sample_wav_path)
         self.generate_silent_wav(self.inter_sentence_pause_wav_path, 
                                  config.intersentence_pause_duration)
@@ -24,7 +24,7 @@ class AudioGenerator():
                                  config.initial_latency_duration)
 
 
-    def generate_audio(self, text, path):
+    def generate_audio(self, text : str, path : str | Path):
         wav_file = wave.open(str(path), 'w')
         try:
             self.model.synthesize(text, wav_file)
@@ -32,11 +32,11 @@ class AudioGenerator():
             wav_file.close()
         return path
 
-    def generate_sample(self, path):
+    def generate_sample(self, path : str | Path):
         self.generate_audio( "Hello.", path)
         return self.sample_wav_path
     
-    def generate_silent_wav(self, result_path, duration):
+    def generate_silent_wav(self, result_path : str | Path, duration : float):
         # Open the sample file to get the parameters
         with wave.open(str(self.sample_wav_path), 'r') as wf:
             params = wf.getparams()
