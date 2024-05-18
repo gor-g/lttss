@@ -2,10 +2,15 @@ from tts_service import TTSService
 from flask import Flask, request, make_response
 import os
 import signal
+from utils import get_os_api
+
 
 PID = os.getpid()
 app = Flask(__name__)
-tts_service = TTSService()
+
+config = get_os_api().get_config()
+
+tts_service = None
 
 
 @app.route('/read_from_file', methods=['POST'])
@@ -73,6 +78,11 @@ def shutdown():
     os.kill(pid, signal.SIGINT)
     return "shuting down lttss", 200
 
+@app.before_request
+def initialize():
+    global tts_service
+    if tts_service is None:
+        tts_service = TTSService(config)
 
 if __name__ == '__main__':
-    app.run(port=tts_service.config.port, debug=True)
+    app.run(port=config.port, debug=True)

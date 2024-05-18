@@ -3,14 +3,14 @@ from config import LTTSSConfig
 import time
 from langdetect import detect
 from player_service import MPV
-from utils import get_os_api
 from text_processor import TextProcessor
+from pathlib import Path
 
 from audio_generator import AudioGenerator
 
 class TTSService():
-    def __init__(self):
-        self.config : LTTSSConfig = get_os_api().get_config()
+    def __init__(self, config : LTTSSConfig):
+        self.config : LTTSSConfig = config
         self.init_dirs()
         self.load_models()
         self.load_text_processors()
@@ -41,16 +41,16 @@ class TTSService():
     def make_export_wav_path(self):
         return f"{self.config.export_dir_path}/voice-{time.time_ns()}.wav"
     
-    def generate_audio(self, lang, text, path):
+    def generate_audio(self, lang : str, text : str, path : str | Path):
         path = self.generators[lang].generate_audio(text, path)
         return path
     
-    def read_from_file(self, textfilename):
+    def read_from_file(self, textfilename : str):
         with open(textfilename, 'r') as f:
             text = f.read()
         return text
     
-    def play_sentences(self, sentences, lang):
+    def play_sentences(self, sentences : list[str], lang : str):
         sentence = sentences.pop(0)
         path = self.make_tmp_wav_path()
         self.generate_audio(lang, sentence, path)
