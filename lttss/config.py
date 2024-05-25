@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from warnings import warn
 
 class LTTSSConfig():
     def __init__(self, path):
@@ -27,6 +28,17 @@ class LTTSSConfig():
         self.intersentence_pause_duration = config_json["intersentence_pause_duration"]
         self.initial_latency_duration = config_json["initial_latency_duration"]
         self.clipboard = config_json["clipboard"]
+
+        if "export_format" in config_json:
+            self.export_format : str = config_json["export_format"].lower()
+            if self.export_format not in ["wav", "mp3"]:
+                warn(f"Export format {self.export_format} is not supported. Defaulting to wav.")
+                self.export_format = "wav"
+        else:
+            self.export_format = "wav"
+
+        self.ffmpeg_path = config_json["ffmpeg_path"]
+
 
     def load_from_json(self, path):
         with open(str(path)) as f:

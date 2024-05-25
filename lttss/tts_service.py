@@ -5,6 +5,7 @@ from langdetect import detect
 from player_service import PlayerService, MPV
 from text_processor import TextProcessor
 from pathlib import Path
+import subprocess
 
 from audio_generator import AudioGenerator
 
@@ -25,8 +26,8 @@ class TTSService():
 
     def load_models(self):
         self.generators : dict[str : AudioGenerator] = dict()
-        for lang, model_file_name in self.config.models.items():
-            self.generators[lang] = AudioGenerator( model_file_name, self.config)
+        for lang, model_config in self.config.models.items():
+            self.generators[lang] = AudioGenerator( model_config, self.config)
         self.generators['fallback'] = self.generators[self.config.fallback_lang]
 
     def load_text_processors(self):
@@ -40,6 +41,11 @@ class TTSService():
     
     def make_export_wav_path(self):
         return f"{self.config.export_dir_path}/voice-{time.time_ns()}.wav"
+    
+    def change_path_format_from_wav(self, path : str | Path, format : str):
+        path = Path(path)
+        new_path = path.with_suffix(f".{format}")
+        return new_path
     
     def generate_audio(self, lang : str, text : str, path : str | Path):
         path = self.generators[lang].generate_audio(text, path)
@@ -79,11 +85,21 @@ class TTSService():
         sentences = self.text_processors[lang].process_into_tokens(text)
         self.append_sentences(sentences, lang)
 
+    def convert_audio(self, input_path, output_path):
+        subprocess.run([self.config.ffmpeg_path, '-i', input_path, '-codec:a', 'libmp3lame', '-q:a', '0', '-b:a', '320k', output_path], check=True)
+
     def export_text(self, text, lang):
         path = self.make_export_wav_path()
         text = self.text_processors[lang].clean_text(text)
-        self.generate_audio(lang, text, path)
-        return path
+        path = self.generate_audio(lang, text, path)
+        if self.config.export_format != "wav":
+            new_path = self.change_path_format_from_wav(path, self.config.export_format)
+            self.convert_audio(path, new_path)
+
+            path = new_path
+
+
+        return str(path)
     
     def play_text_file(self, textfilename, lang):
         text = self.read_from_file(textfilename)
