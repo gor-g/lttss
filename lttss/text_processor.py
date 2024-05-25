@@ -51,7 +51,7 @@ class TextProcessor:
         return text
     
     def clean_text(self, text):
-        text = re.sub(r'\n+', ', ', text)
+        text = re.sub(r'\n+', '. ', text)
         text = re.sub(r'[!?]+', '. ', text)
         text = re.sub(r'"+', ',,', text) # this is here for pauses. Piper is bad at handling silences for quotes and ellipses.
         text = re.sub(r'\s+', ' ', text)
