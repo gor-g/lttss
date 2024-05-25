@@ -5,15 +5,18 @@ import subprocess
 import atexit
 import json
 import socket
+from error import PlaceholderMethodError
+from pathlib import Path
+
 
 class PlayerService:
-    def run(self): raise NotImplementedError("This is a placeholder method, call a child class instead.")
-    def append(self, path): raise NotImplementedError("This is a placeholder method, call a child class instead.")
-    def load_new_sequance_tip(self, path): raise NotImplementedError("This is a placeholder method, call a child class instead.")
-    def set_speed(self, speed): raise NotImplementedError("This is a placeholder method, call a child class instead.")
-    def terminate(self): raise NotImplementedError("This is a placeholder method, call a child class instead.")
-    def toggle_pause(self): raise NotImplementedError("This is a placeholder method, call a child class instead.")
-    def back(self): raise NotImplementedError("This is a placeholder method, call a child class instead.")
+    def run(self): raise PlaceholderMethodError()
+    def append(self, path : Path | str): raise PlaceholderMethodError()
+    def load_new_sequance_tip(self, path : Path | str): raise PlaceholderMethodError()
+    def set_speed(self, speed : float): raise PlaceholderMethodError()
+    def terminate(self): raise PlaceholderMethodError()
+    def toggle_pause(self): raise PlaceholderMethodError()
+    def back(self): raise PlaceholderMethodError()
 
 
 
@@ -34,23 +37,23 @@ class MPV(PlayerService):
     def sleep(self):
         sleep(0.1)
     
-    def send_command(self, command):
+    def send_command(self, command : dict):
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
             s.connect(str(self.input_ipc_server))
             s.sendall((json.dumps(command) + '\n').encode('utf-8'))
         self.sleep()
 
-    def append(self, path):
+    def append(self, path : Path | str):
         command = {"command": ["loadfile", str(path), "append-play"]}
         self.send_command(command)
 
-    def load_new_sequance_tip(self, path):
+    def load_new_sequance_tip(self, path : Path | str):
         command = {"command": ["loadfile", str(path), "replace"]}
         self.send_command(command)
         command = {"command": ["playlist-clear"]}
         self.send_command(command)
 
-    def set_speed(self, speed):
+    def set_speed(self, speed : float):
         self.speed = speed
         command = {"command": ["set_property", "speed", self.speed]}
         self.send_command(command)
