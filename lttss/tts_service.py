@@ -51,6 +51,10 @@ class TTSService():
         path = self.generators[lang].generate_audio(text, path)
         return path
     
+    def generate_multisentence_audio(self, lang : str, sentences : list[str], path : str | Path):
+        path = self.generators[lang].generate_multisentence_audio(sentences, path)
+        return path
+    
     def read_from_file(self, textfilename : str):
         with open(textfilename, 'r') as f:
             text = f.read()
@@ -90,8 +94,8 @@ class TTSService():
 
     def export_text(self, text, lang):
         path = self.make_export_wav_path()
-        text = self.text_processors[lang].clean_text(text)
-        path = self.generate_audio(lang, text, path)
+        tokens = self.text_processors[lang].process_into_tokens(text)
+        path = self.generate_multisentence_audio(lang, tokens, path)
         if self.config.export_format != "wav":
             new_path = self.change_path_format_from_wav(path, self.config.export_format)
             self.convert_audio(path, new_path)
