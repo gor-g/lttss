@@ -64,12 +64,12 @@ class TTSService():
         sentence = sentences.pop(0)
         path = self.make_tmp_wav_path()
         self.generate_audio(lang, sentence, path)
-        self.player.load_new_sequance_tip(self.config.intersentence_silence_wav_path)
+        self.player.load_new_sequance_tip(self.generators[lang].initial_latency_wav_path)
         self.player.append(path)
         for sentence in sentences:
             path = self.make_tmp_wav_path()
             self.generate_audio(lang, sentence, path)
-            self.player.append(self.config.intersentence_silence_wav_path)
+            self.player.append(self.generators[lang].inter_sentence_pause_wav_path)
             self.player.append(path)
         return
 
