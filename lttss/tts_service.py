@@ -1,7 +1,6 @@
 import os
 from config import LTTSSConfig
 import time
-from langdetect import detect
 from player_service import PlayerService, MPV
 from text_processor import TextProcessor
 from pathlib import Path
