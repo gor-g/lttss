@@ -5,7 +5,9 @@ import nltk
 class TextProcessor:
 
     def __init__(self, lang :str):
-        if not nltk.data.find('tokenizers/punkt'):
+        try:
+            nltk.data.find('tokenizers/punkt')
+        except LookupError:
             nltk.download('punkt')
         self.tokenizer = nltk.data.load(f'tokenizers/punkt/{lang}.pickle')
 
