@@ -111,11 +111,13 @@ def export_selected(os_api : OSAPI, port : int, lang : str):
         print("No text to export.")
         os_api.notify("No text to export.")
 
-def speedup(port : int):
-    requests.post(f"http://localhost:{port}/speedup")
+def speedup(os_api : OSAPI, port : int):
+    resonse = requests.post(f"http://localhost:{port}/speedup")
+    os_api.notify("LTTSS speed x"+ resonse.text)
 
-def speeddown(port : int):
-    requests.post(f"http://localhost:{port}/speeddown")
+def speeddown(os_api : OSAPI,port : int):
+    resonse = requests.post(f"http://localhost:{port}/speeddown")
+    os_api.notify("LTTSS speed x"+ resonse.text)
 
 
 def toggle_pause(port : int):

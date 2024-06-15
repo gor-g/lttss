@@ -30,10 +30,10 @@ elif args.append_to_play:
     cmd_impl.append_selected(os_api, port, args.lang)
 
 elif args.speed_up:
-    cmd_impl.speedup(port)
+    cmd_impl.speedup(os_api, port)
 
 elif args.speed_down:
-    cmd_impl.speeddown(port)
+    cmd_impl.speeddown(os_api, port)
 
 elif args.export:
     cmd_impl.export_selected(os_api, port, args.lang)
