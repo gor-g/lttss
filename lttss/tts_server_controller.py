@@ -21,13 +21,17 @@ def read_from_file():
 
 @app.route('/speedup', methods=['POST'])
 def speedup():
-    tts_service.speedup()
-    return make_response('', 200)
+    new_speed = tts_service.speedup()
+    return make_response(
+        f"{new_speed:.2f}"
+        , 200)
 
 @app.route('/speeddown', methods=['POST'])
 def speeddown():
-    tts_service.speeddown()
-    return make_response('', 200)
+    new_speed = tts_service.speeddown()
+    return make_response(
+        f"{new_speed:.2f}"
+        , 200)
 
 @app.route('/export_from_file', methods=['POST'])
 @app.route('/export_from_file/<lang>', methods=['POST'])

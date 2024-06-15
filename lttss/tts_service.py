@@ -119,7 +119,11 @@ class TTSService():
         self.player.back()
     
     def speedup(self):
-        self.player.set_speed(self.player.speed + self.config.speed_increment)
+        new_speed = self.player.speed + self.config.speed_increment
+        self.player.set_speed(new_speed)
+        return new_speed
 
     def speeddown(self):
-        self.player.set_speed(self.player.speed - self.config.speed_increment)
+        new_speed = self.player.speed - self.config.speed_increment
+        self.player.set_speed(new_speed)
+        return new_speed
