@@ -1,15 +1,15 @@
 import os
 import subprocess
-from config import LTTSSConfig
+from ..services.config import LTTSSConfig
 
 class OSAPI:
-    def get_config(self) -> LTTSSConfig:
+    def get_config(self) -> LTTSSConfig: # type: ignore
         pass
 
-    def read_clipboard_content(self)->str:
+    def read_clipboard_content(self)->str: # type: ignore
         pass
 
-    def notify(self, message) -> None:
+    def notify(self, message: str) -> None:
         print("notify OSAPI")
         pass
 
@@ -34,7 +34,7 @@ class LinuxAPI(OSAPI):
         
         return data
         
-    def notify(self, message):
+    def notify(self, message: str):
         res =  subprocess.run(["notify-send",  message])
         if res.returncode != 0:
             raise Exception(f"notify-send failed with error : {res.stderr}")
@@ -61,7 +61,7 @@ class WindowsAPI(OSAPI):
         
         return data
         
-    def notify(self, message):
+    def notify(self, message: str):
         subprocess.run(["powershell", "-Command", f"New-BurntToastNotification -Text '{message}'"])
 
 
@@ -86,5 +86,5 @@ class MacOSAPI(OSAPI):
         
         return data
         
-    def notify(self, message):
+    def notify(self, message: str):
         subprocess.run(["osascript", "-e", f'display notification "{message}" with title "LTTSS"'])

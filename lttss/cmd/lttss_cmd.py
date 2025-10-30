@@ -1,6 +1,6 @@
 import argparse
-from utils import get_os_api
-import cmd_impl
+from ..utils.utils import get_os_api
+from .cmd_impl import CMDImpl
 
 parser = argparse.ArgumentParser(description='TTS Command')
 
@@ -21,28 +21,28 @@ os_api = get_os_api()
 port = os_api.get_config().port
 
 if args.run:
-    cmd_impl.run(os_api, port)
+    CMDImpl.run(os_api, port)
 
 elif args.play:
-    cmd_impl.play_selected(os_api, port, args.lang)
+    CMDImpl.play_selected(os_api, port, args.lang)
 
 elif args.append_to_play:
-    cmd_impl.append_selected(os_api, port, args.lang)
+    CMDImpl.append_selected(os_api, port, args.lang)
 
 elif args.speed_up:
-    cmd_impl.speedup(os_api, port)
+    CMDImpl.speedup(os_api, port)
 
 elif args.speed_down:
-    cmd_impl.speeddown(os_api, port)
+    CMDImpl.speeddown(os_api, port)
 
 elif args.export:
-    cmd_impl.export_selected(os_api, port, args.lang)
+    CMDImpl.export_selected(os_api, port, args.lang)
 
 elif args.play_pause:
-    cmd_impl.toggle_pause(port)
+    CMDImpl.toggle_pause(port)
 
 elif args.back:
-    cmd_impl.back(port)
+    CMDImpl.back(port)
 
 elif args.shutdown:
-    cmd_impl.shutdown(port)
+    CMDImpl.shutdown(port)

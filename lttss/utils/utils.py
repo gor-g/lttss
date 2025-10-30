@@ -1,7 +1,7 @@
 import platform
 import numpy as np
 import wave
-from os_api import OSAPI, LinuxAPI, WindowsAPI, MacOSAPI
+from ..cmd.os_api import OSAPI, LinuxAPI, WindowsAPI, MacOSAPI
 
 def get_os_api()-> OSAPI:
     os_name = platform.system()
