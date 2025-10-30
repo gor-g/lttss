@@ -1,4 +1,4 @@
-from config import LTTSSConfig
+from lttss.services.config import LTTSSConfig
 import re
 import nltk
 

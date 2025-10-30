@@ -1,12 +1,12 @@
 import os
-from config import LTTSSConfig
+from lttss.services.config import LTTSSConfig
 import time
-from player_service import PlayerService, MPV
-from text_processor import TextProcessor
+from lttss.services.player import PlayerService, MPV
+from lttss.text_processor import TextProcessor
 from pathlib import Path
 import subprocess
 
-from audio_generator import AudioGenerator
+from lttss.audio_generator import AudioGenerator
 
 class TTSService():
     def __init__(self, config : LTTSSConfig):
@@ -89,7 +89,7 @@ class TTSService():
         self.append_sentences(sentences, lang)
 
     def convert_audio(self, input_path, output_path):
-        subprocess.run([self.config.ffmpeg_path, '-i', input_path, '-codec:a', 'libmp3lame', '-q:a', '0', '-b:a', '320k', output_path], check=True)
+        subprocess.run([self.config.ffmpeg_path, '-i', input_path, '-codec:a', "atempo=2.0", 'libmp3lame', '-q:a', '0', '-b:a', '320k', output_path], check=True)
 
     def export_text(self, text, lang):
         path = self.make_export_wav_path()
@@ -127,3 +127,7 @@ class TTSService():
         new_speed = self.player.speed - self.config.speed_increment
         self.player.set_speed(new_speed)
         return new_speed
+
+    def cycle_pause_handling_policies(self):
+        for generator in self.generators.values():
+            generator.cycle_pause_handling_policies()

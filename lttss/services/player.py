@@ -5,7 +5,7 @@ import subprocess
 import atexit
 import json
 import socket
-from error import PlaceholderMethodError
+from lttss.utils.error import PlaceholderMethodError
 from pathlib import Path
 
 

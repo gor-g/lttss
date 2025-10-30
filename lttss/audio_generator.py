@@ -1,4 +1,4 @@
-from config import LTTSSConfig
+from lttss.services.config import LTTSSConfig
 from piper.voice import PiperVoice
 import wave
 import numpy as np

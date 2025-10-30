@@ -1,8 +1,8 @@
-from tts_service import TTSService
+from .tts_service import TTSService
 from flask import Flask, request, make_response
 import os
 import signal
-from utils import get_os_api
+from lttss.utils.utils import get_os_api
 
 
 PID = os.getpid()
@@ -81,6 +81,13 @@ def shutdown():
     assert pid == PID
     os.kill(pid, signal.SIGINT)
     return "shuting down lttss", 200
+
+
+@app.route("/cycle_pause_handling_policies", methods=['POST'])
+def cycle_pause_handling_policies():
+    new_duration = tts_service.cycle_pause_handling_policies()
+    return make_response(f"{new_duration:.2f}", 200)
+
 
 @app.before_request
 def initialize():
