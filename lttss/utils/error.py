@@ -2,7 +2,7 @@
 
 
 class PlaceholderMethodError(Exception):
-    def __init__(self, message=None):
+    def __init__(self, message: str|None=None):
         if message is None:
             self.message = "This is a placeholder method and must be implemented by a subclass."
         else:

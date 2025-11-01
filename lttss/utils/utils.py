@@ -16,7 +16,7 @@ def get_os_api()-> OSAPI:
 
 
 
-def generate_sinusoidal_wav(path, duration=1.0, frequency=440.0, framerate=44100):
+def generate_sinusoidal_wav(path: str, duration: float=1.0, frequency: float=440.0, framerate: int=44100):
     # Generate the time values
     t = np.linspace(0, duration, int(framerate * duration), False)
 

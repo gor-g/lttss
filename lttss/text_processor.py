@@ -4,12 +4,19 @@ import nltk
 
 class TextProcessor:
 
-    def __init__(self, lang :str):
+    def __init__(self, lang: str):
+        for pkg in ['punkt', 'punkt_tab']:
+            try:
+                nltk.data.find(f'tokenizers/{pkg}')
+            except LookupError:
+                nltk.download(pkg)
+
         try:
-            nltk.data.find('tokenizers/punkt')
+            self.tokenizer = nltk.data.load(f'tokenizers/punkt/{lang}.pickle')
         except LookupError:
-            nltk.download('punkt')
-        self.tokenizer = nltk.data.load(f'tokenizers/punkt/{lang}.pickle')
+            print(f"[WARN] Tokenizer for language '{lang}' not found. Falling back to English.")
+            self.tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+
 
     def process_into_tokens(self, text : str) -> list[str]:
         text = self.clean_white_spaces(text)

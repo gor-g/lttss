@@ -15,34 +15,40 @@ parser.add_argument('-b', '--back', action='store_true', help='Go back.', defaul
 parser.add_argument('-l', '--lang', help='Language of the text.', default="english")
 parser.add_argument('--shutdown', action='store_true', help='Shutdown the server.', default=False)
 
-args = parser.parse_args()
+def main():
 
-os_api = get_os_api()
-port = os_api.get_config().port
+    args = parser.parse_args()
 
-if args.run:
-    CMDImpl.run(os_api, port)
+    os_api = get_os_api()
+    port = os_api.get_config().port
 
-elif args.play:
-    CMDImpl.play_selected(os_api, port, args.lang)
+    if args.run:
+        CMDImpl.run(os_api, port)
 
-elif args.append_to_play:
-    CMDImpl.append_selected(os_api, port, args.lang)
+    elif args.play:
+        CMDImpl.play_selected(os_api, port, args.lang)
 
-elif args.speed_up:
-    CMDImpl.speedup(os_api, port)
+    elif args.append_to_play:
+        CMDImpl.append_selected(os_api, port, args.lang)
 
-elif args.speed_down:
-    CMDImpl.speeddown(os_api, port)
+    elif args.speed_up:
+        CMDImpl.speedup(os_api, port)
 
-elif args.export:
-    CMDImpl.export_selected(os_api, port, args.lang)
+    elif args.speed_down:
+        CMDImpl.speeddown(os_api, port)
 
-elif args.play_pause:
-    CMDImpl.toggle_pause(port)
+    elif args.export:
+        CMDImpl.export_selected(os_api, port, args.lang)
 
-elif args.back:
-    CMDImpl.back(port)
+    elif args.play_pause:
+        CMDImpl.toggle_pause(port)
 
-elif args.shutdown:
-    CMDImpl.shutdown(port)
+    elif args.back:
+        CMDImpl.back(port)
+
+    elif args.shutdown:
+        CMDImpl.shutdown(port)
+
+
+if __name__ == "__main__":
+    main()

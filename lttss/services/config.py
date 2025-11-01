@@ -3,9 +3,9 @@ from pathlib import Path
 from warnings import warn
 
 class LTTSSConfig():
-    def __init__(self, path):
+    def __init__(self, path: str):
         config_json = self.load_from_json(path)
-        self.models = config_json["models"]
+        self.models: dict[str, dict[str, str | int]] = config_json["models"]
         self.fallback_lang = config_json["fallback_lang"]
         self.data_dir_path = Path(config_json["data_dir_path"])
         self.models_dir_path = self.data_dir_path / "models"
@@ -40,7 +40,7 @@ class LTTSSConfig():
         self.ffmpeg_path = config_json["ffmpeg_path"]
 
 
-    def load_from_json(self, path):
-        with open(str(path)) as f:
+    def load_from_json(self, path: str):
+        with open(path) as f:
             config = json.load(f)
         return config

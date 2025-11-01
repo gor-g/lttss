@@ -83,12 +83,6 @@ def shutdown():
     return "shuting down lttss", 200
 
 
-@app.route("/cycle_pause_handling_policies", methods=['POST'])
-def cycle_pause_handling_policies():
-    new_duration = tts_service.cycle_pause_handling_policies()
-    return make_response(f"{new_duration:.2f}", 200)
-
-
 @app.before_request
 def initialize():
     global tts_service

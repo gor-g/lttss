@@ -8,7 +8,7 @@ from .os_api import OSAPI
 
 class CMDImpl:
     @staticmethod
-    def start_server(port):
+    def start_server(port:int)-> None:
         from lttss.tts_server_controller import app
         app.run(port=port, host="localhost")
 

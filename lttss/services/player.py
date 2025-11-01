@@ -1,30 +1,40 @@
 
-import os
 from time import sleep
 import subprocess
 import atexit
 import json
 import socket
-from lttss.utils.error import PlaceholderMethodError
+from typing import Any
 from pathlib import Path
+from abc import ABC, abstractmethod
 
-
-class PlayerService:
-    def run(self): raise PlaceholderMethodError()
-    def append(self, path : Path | str): raise PlaceholderMethodError()
-    def load_new_sequance_tip(self, path : Path | str): raise PlaceholderMethodError()
-    def set_speed(self, speed : float): raise PlaceholderMethodError()
-    def terminate(self): raise PlaceholderMethodError()
-    def toggle_pause(self): raise PlaceholderMethodError()
-    def back(self): raise PlaceholderMethodError()
-
+class PlayerService(ABC):
+    @abstractmethod
+    def run(self): pass
+    @abstractmethod
+    def append(self, path : Path | str): pass
+    @abstractmethod
+    def load_new_sequance_tip(self, path : Path | str): pass
+    @abstractmethod
+    def set_speed(self, speed : float): pass
+    @abstractmethod
+    def terminate(self): pass
+    @abstractmethod
+    def toggle_pause(self): pass
+    @abstractmethod
+    def back(self): pass
+    @abstractmethod
+    def speedup(self)->float: pass
+    @abstractmethod
+    def speeddown(self)->float: pass
 
 
 
 class MPV(PlayerService):
-    def __init__(self, input_ipc_server, speed=2) -> None:
+    def __init__(self, input_ipc_server: str, speed: int =2, speed_increment: float = .1) -> None:
         self.input_ipc_server = input_ipc_server
         self.speed = speed
+        self.speed_increment = speed_increment
         
     def run(self):
         self.process = subprocess.Popen(f"mpv --no-terminal --no-video --idle --input-ipc-server={self.input_ipc_server}", shell=True, )
@@ -37,7 +47,7 @@ class MPV(PlayerService):
     def sleep(self):
         sleep(0.1)
     
-    def send_command(self, command : dict):
+    def send_command(self, command : dict[str,list[Any]]):
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
             s.connect(str(self.input_ipc_server))
             s.sendall((json.dumps(command) + '\n').encode('utf-8'))
@@ -55,13 +65,13 @@ class MPV(PlayerService):
 
     def set_speed(self, speed : float):
         self.speed = speed
-        command = {"command": ["set_property", "speed", self.speed]}
+        command: dict[str,list[str|float]] = {"command": ["set_property", "speed", self.speed]}
         self.send_command(command)
 
     def terminate(self):
         self.send_command({"command": ["quit"]})
         self.process.terminate()
-        return
+        return 
     
     def toggle_pause(self):
         self.send_command({"command": ["cycle", "pause"]})
@@ -70,6 +80,14 @@ class MPV(PlayerService):
     def back(self):
         self.send_command({"command": ["playlist-prev"]})
         return
+    
+    def speedup(self):
+        self.speed = self.speed + self.speed_increment
+        return self.speed
+
+    def speeddown(self):
+        self.speed = self.speed - self.speed_increment
+        return self.speed
     
 
 if __name__=="__main__":
@@ -84,5 +102,3 @@ if __name__=="__main__":
     sleep(5)
 
     mpv.load_new_sequance_tip('/home/storage/trash/piper_toplay.wav')
-
-    mpv.clear()

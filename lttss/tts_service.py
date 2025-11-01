@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 
 from lttss.audio_generator import AudioGenerator
+from lttss.types import Lang
 
 class TTSService():
     def __init__(self, config : LTTSSConfig):
@@ -14,7 +15,7 @@ class TTSService():
         self.init_dirs()
         self.load_models()
         self.load_text_processors()
-        self.player : PlayerService  = MPV(self.config.mpv_socket_dir_path, self.config.default_speed)
+        self.player : PlayerService  = MPV(str(self.config.mpv_socket_dir_path), self.config.default_speed)
         self.player.run()
         self.play_text("LTTSS is running!", "english")
     
@@ -24,13 +25,13 @@ class TTSService():
         os.makedirs(self.config.to_play_dir_path, exist_ok=True)
 
     def load_models(self):
-        self.generators : dict[str : AudioGenerator] = dict()
+        self.generators : dict[str, AudioGenerator] = dict()
         for lang, model_config in self.config.models.items():
             self.generators[lang] = AudioGenerator( model_config, self.config)
         self.generators['fallback'] = self.generators[self.config.fallback_lang]
 
     def load_text_processors(self):
-        self.text_processors : dict[str : TextProcessor] = dict()
+        self.text_processors : dict[str, TextProcessor] = dict()
         for lang in self.config.models.keys():
             self.text_processors[lang] = TextProcessor(lang)
         self.text_processors['fallback'] = self.text_processors[self.config.fallback_lang]
@@ -72,7 +73,7 @@ class TTSService():
             self.player.append(path)
         return
 
-    def append_sentences(self, sentences, lang):
+    def append_sentences(self, sentences: list[str], lang: Lang):
         for sentence in sentences:
             path = self.make_tmp_wav_path()
             self.generate_audio(lang, sentence, path)
@@ -80,35 +81,41 @@ class TTSService():
             self.player.append(path)
         return
     
-    def play_text(self, text, lang):
+    def play_text(self, text: str, lang: Lang):
         sentences = self.text_processors[lang].process_into_tokens(text)
         self.play_sentences(sentences, lang)
 
-    def append_text(self, text, lang):
+    def append_text(self, text: str, lang: Lang):
         sentences = self.text_processors[lang].process_into_tokens(text)
         self.append_sentences(sentences, lang)
 
-    def convert_audio(self, input_path, output_path):
-        subprocess.run([self.config.ffmpeg_path, '-i', input_path, '-codec:a', "atempo=2.0", 'libmp3lame', '-q:a', '0', '-b:a', '320k', output_path], check=True)
+    def convert_audio(self, input_path: str, output_path: str):
+        subprocess.run([
+            self.config.ffmpeg_path,
+            "-i", input_path,
+            "-filter:a", "atempo=2.0",
+            "-codec:a", "libmp3lame",
+            "-q:a", "0",
+            "-b:a", "320k",
+            output_path
+        ], check=True)
+        # subprocess.run([self.config.ffmpeg_path, '-i', input_path, '-codec:a', "atempo=2.0", 'libmp3lame', '-q:a', '0', '-b:a', '320k', output_path], check=True)
 
-    def export_text(self, text, lang):
+    def export_text(self, text: str, lang: Lang):
         path = self.make_export_wav_path()
         tokens = self.text_processors[lang].process_into_tokens(text)
         path = self.generate_multisentence_audio(lang, tokens, path)
         if self.config.export_format != "wav":
             new_path = self.change_path_format_from_wav(path, self.config.export_format)
-            self.convert_audio(path, new_path)
-
+            self.convert_audio(str(path), str(new_path))
             path = new_path
-
-
         return str(path)
     
-    def play_text_file(self, textfilename, lang):
+    def play_text_file(self, textfilename: str, lang: Lang):
         text = self.read_from_file(textfilename)
         self.play_text(text, lang)
     
-    def export_text_file(self, textfilename, lang):
+    def export_text_file(self, textfilename:str, lang: Lang):
         text = self.read_from_file(textfilename)
         return self.export_text(text, lang)
     
@@ -118,16 +125,8 @@ class TTSService():
     def back(self):
         self.player.back()
     
-    def speedup(self):
-        new_speed = self.player.speed + self.config.speed_increment
-        self.player.set_speed(new_speed)
-        return new_speed
+    def speedup(self)->float:
+        return self.player.speedup()
 
-    def speeddown(self):
-        new_speed = self.player.speed - self.config.speed_increment
-        self.player.set_speed(new_speed)
-        return new_speed
-
-    def cycle_pause_handling_policies(self):
-        for generator in self.generators.values():
-            generator.cycle_pause_handling_policies()
+    def speeddown(self)->float:
+        return self.player.speeddown()
