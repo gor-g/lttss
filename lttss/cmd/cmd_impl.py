@@ -3,6 +3,8 @@ import requests
 import threading
 import time
 import sys
+from ..utils.initialize import initialize
+
 
 from .os_api import OSAPI
 
@@ -14,7 +16,7 @@ class CMDImpl:
 
     @classmethod
     def run(cls, os_api : OSAPI, port : int): # TODO : Clean this function
-
+        initialize()
         try:
             response = requests.post(f"http://localhost:{port}/ping")
             if response.text == "pong":

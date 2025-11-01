@@ -1,7 +1,6 @@
 import argparse
 
 from ..utils.utils import get_os_api
-from ..utils.initialize import initialize
 from .cmd_impl import CMDImpl
 
 parser = argparse.ArgumentParser(description='TTS Command')
@@ -53,5 +52,4 @@ def main():
 
 
 if __name__ == "__main__":
-    initialize()
     main()
