@@ -1,18 +1,21 @@
-import json
+import json, os
 from pathlib import Path
 from warnings import warn
+
+from lttss.utils.path import normalize_path
 
 class LTTSSConfig():
     def __init__(self, path: str):
         config_json = self.load_from_json(path)
         self.models: dict[str, dict[str, str | int]] = config_json["models"]
         self.fallback_lang = config_json["fallback_lang"]
-        self.data_dir_path = Path(config_json["data_dir_path"])
+        self.data_dir_path = Path(normalize_path(config_json["data_dir_path"]))
         self.models_dir_path = self.data_dir_path / "models"
         self.intersentence_silence_wav_path = self.data_dir_path / "intersentence_silence.wav"
         self.initial_silence_wav_path = self.data_dir_path / "initial_silence.wav"
-        self.export_dir_path = Path(config_json["export_dir_path"])
-        self.tmp_dir_path = Path(config_json["tmp_dir_path"])
+        self.export_dir_path = Path(normalize_path(config_json["export_dir_path"]))
+        os.makedirs(self.export_dir_path, exist_ok=True)
+        self.tmp_dir_path = Path(normalize_path(config_json["tmp_dir_path"]))
 
         self.mpv_socket_file_name = Path(config_json["mpv_socket_file_name"])
         self.to_play_dir_name = Path(config_json["to_play_dir_name"])
@@ -37,7 +40,7 @@ class LTTSSConfig():
         else:
             self.export_format = "wav"
 
-        self.ffmpeg_path = config_json["ffmpeg_path"]
+        self.ffmpeg_path = normalize_path(config_json["ffmpeg_path"])
 
 
     def load_from_json(self, path: str):

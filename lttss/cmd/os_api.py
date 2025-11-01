@@ -18,7 +18,7 @@ class LinuxAPI(OSAPI):
         self.uname = os.uname()
     
     def get_config(self) -> LTTSSConfig:
-        config = LTTSSConfig(os.path.expanduser("~")+"/.config/lttss/lttss-config.json")
+        config = LTTSSConfig(os.path.expanduser("~")+"/.config/lttss/config.json")
         self.clipboard = config.clipboard
         return config
 
